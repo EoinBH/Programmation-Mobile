@@ -62,12 +62,53 @@ app.get('/oauth/callback', async (req, res) => {
 
         console.log("Tokens stored successfully.");
 
-        res.send("OAuth successful. You can now call /dexcom/egvs");
+        res.send(`
+        <html>
+        <head>
+        <title>Bon Sang Login</title>
+        <style>
+        body {
+        font-family: -apple-system;
+        text-align: center;
+        margin-top: 100px;
+        }
+        button {
+        font-size: 18px;
+        padding: 12px 24px;
+        }
+        </style>
+        </head>
+
+        <body>
+
+        <h2>Connexion réussie</h2>
+        <p>Vous pouvez retourner dans l'application.</p>
+
+        <button onclick="window.close()">Continuer</button>
+
+        </body>
+        </html>
+        `);
 
     } catch (error) {
         console.error(error.response?.data || error.message);
         res.send("Token exchange failed.");
     }
+});
+
+/*
+    Check if user is authenticated
+*/
+app.get('/auth/status', (req, res) => {
+
+    if (!dexcomTokens.access_token) {
+        return res.json({ authenticated: false });
+    }
+
+    res.json({
+        authenticated: true,
+        expires_at: dexcomTokens.expires_at
+    });
 });
 
 /*
