@@ -6,14 +6,106 @@
 //
 
 import UIKit
+import SafariServices
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, SFSafariViewControllerDelegate {
 
+    @IBOutlet weak var loginButton: UIButton!
+    
     var glucoseRecords: [GlucoseRecord] = []
+    
+    var glucoseTimer: Timer?
+    
+    var safariVC: SFSafariViewController?
 
+    struct AuthStatus: Decodable {
+        let authenticated: Bool
+    }
+    
+    func checkAuthStatus() {
+
+        let urlString = "https://india-unfightable-overbearingly.ngrok-free.dev/auth/status"
+
+        guard let url = URL(string: urlString) else { return }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+
+            if let error = error {
+                print("Auth check failed:", error)
+                return
+            }
+
+            guard let data = data else { return }
+
+            do {
+
+                let status = try JSONDecoder().decode(AuthStatus.self, from: data)
+
+                DispatchQueue.main.async {
+
+                    if status.authenticated {
+                        print("User already logged in")
+
+                        self.loginButton.isHidden = true
+                        self.fetchGlucose()
+
+                    } else {
+
+                        print("User not authenticated")
+
+                        self.loginButton.isHidden = false
+                    }
+
+                }
+
+            } catch {
+                print("Decode error:", error)
+            }
+
+        }.resume()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchGlucose()
+        checkAuthStatus()
+        //fetchGlucose()
+    }
+    
+    @IBAction func loginButtonTapped(_ sender: UIButton) {
+        loginWithDexcom()
+    }
+    
+    func loginWithDexcom() {
+
+        let urlString = "https://india-unfightable-overbearingly.ngrok-free.dev/auth/dexcom"
+
+        guard let url = URL(string: urlString) else { return }
+
+        safariVC = SFSafariViewController(url: url)
+        safariVC?.delegate = self
+
+        if let safariVC = safariVC {
+            present(safariVC, animated: true)
+        }
+    }
+    
+    func startGlucoseUpdates() {
+
+        if glucoseTimer != nil {
+            return
+        }
+
+        glucoseTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            print("Checking for new glucose data...")
+            self.fetchGlucose()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        glucoseTimer?.invalidate()
+        glucoseTimer = nil
     }
 
     // MARK: - Fetch Glucose Data
@@ -39,10 +131,16 @@ class ViewController: UIViewController {
                 let decoded = try JSONDecoder().decode(DexcomResponse.self, from: data)
 
                 DispatchQueue.main.async {
+                    /*if decoded.records.count != self.glucoseRecords.count {
+                        print("New glucose value detected")
+                        self.glucoseRecords = decoded.records
+                        self.drawGraph()
+                    }*/
                     self.glucoseRecords = decoded.records
                     print("Fetched \(self.glucoseRecords.count) glucose values")
 
                     self.drawGraph()
+                    self.startGlucoseUpdates()
                 }
 
             } catch {
@@ -110,6 +208,16 @@ class ViewController: UIViewController {
 
         view.layer.addSublayer(shapeLayer)
     }
+    
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+
+        print("Login window closed")
+        
+        loginButton.isHidden = true
+        
+        fetchGlucose()
+    }
+    
 }
 
 
