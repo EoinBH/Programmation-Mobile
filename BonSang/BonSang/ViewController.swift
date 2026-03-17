@@ -150,8 +150,36 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
         }.resume()
     }
 
-    // MARK: - Draw Graph
+    @IBOutlet weak var mmolLabel: UILabel!
+    
+    @IBOutlet weak var mgdlLabel: UILabel!
+    
+    func addPoint(at point: CGPoint) {
+        let radius: CGFloat = 4
 
+        let circlePath = UIBezierPath(
+            arcCenter: point,
+            radius: radius,
+            startAngle: 0,
+            endAngle: CGFloat.pi * 2,
+            clockwise: true
+        )
+
+        let circleLayer = CAShapeLayer()
+        circleLayer.path = circlePath.cgPath
+        
+        // Style du point
+        circleLayer.fillColor = UIColor.black.cgColor
+        circleLayer.strokeColor = UIColor.black.cgColor
+        circleLayer.lineWidth = 2
+
+        circleLayer.name = "graphLayer"
+
+        view.layer.addSublayer(circleLayer)
+    }
+    
+    // MARK: - Draw Graph
+    
     func drawGraph() {
 
         print("Drawing graph with \(glucoseRecords.count) points")
@@ -167,11 +195,24 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
         let sorted = glucoseRecords.sorted {
             $0.systemTime < $1.systemTime
         }
+        
+        if let latestRecord = sorted.last {
+            let mgdlValue = latestRecord.value
+            let mmolValue = mgdlValue / 18.0
 
+            mmolLabel.text = String(format: "%.1f mmol/L", mmolValue)
+            mgdlLabel.text = String(format: "%.0f mg/dL", mgdlValue)
+        }
+        
+//        let values = sorted.map { $0.value }
+//
+//        guard let minValue = values.min(),
+//              let maxValue = values.max() else { return }
         let values = sorted.map { $0.value }
 
-        guard let minValue = values.min(),
-              let maxValue = values.max() else { return }
+        // Axe Y fixe : 0 à 22 mmol/L → 0 à 396 mg/dL
+        let minValue: Double = 0
+        let maxValue: Double = 396
 
         let path = UIBezierPath()
 
@@ -181,7 +222,8 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
         let startX: CGFloat = 20
         let bottomY = view.bounds.height - 120
 
-        let valueRange = maxValue - minValue == 0 ? 1 : maxValue - minValue
+        //let valueRange = maxValue - minValue == 0 ? 1 : maxValue - minValue
+        let valueRange = maxValue - minValue
 
         for (index, value) in values.enumerated() {
 
@@ -197,13 +239,16 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
             } else {
                 path.addLine(to: point)
             }
+
+            // Ajout du point visuel
+            addPoint(at: point)
         }
 
         let shapeLayer = CAShapeLayer()
         shapeLayer.path = path.cgPath
-        shapeLayer.strokeColor = UIColor.systemBlue.cgColor
+        shapeLayer.strokeColor = UIColor.black.cgColor
         shapeLayer.fillColor = UIColor.clear.cgColor
-        shapeLayer.lineWidth = 3
+        shapeLayer.lineWidth = 2
         shapeLayer.name = "graphLayer"
 
         view.layer.addSublayer(shapeLayer)
