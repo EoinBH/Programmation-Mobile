@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		221E216B2F699FCA00B55ED8 /* Graphique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221E216A2F699FCA00B55ED8 /* Graphique.swift */; };
+		22E4077E2F6AAC6500BC3271 /* AjouterEvenementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E4077D2F6AAC6500BC3271 /* AjouterEvenementViewController.swift */; };
 		C15550E72F54B987007287B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15550E62F54B987007287B1 /* AppDelegate.swift */; };
 		C15550E92F54B987007287B1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15550E82F54B987007287B1 /* SceneDelegate.swift */; };
 		C15550EB2F54B987007287B1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15550EA2F54B987007287B1 /* ViewController.swift */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		221E216A2F699FCA00B55ED8 /* Graphique.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graphique.swift; sourceTree = "<group>"; };
+		22E4077D2F6AAC6500BC3271 /* AjouterEvenementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AjouterEvenementViewController.swift; sourceTree = "<group>"; };
 		C15550E32F54B987007287B1 /* BonSang.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BonSang.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C15550E62F54B987007287B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C15550E82F54B987007287B1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 				C15550E82F54B987007287B1 /* SceneDelegate.swift */,
 				C15550EA2F54B987007287B1 /* ViewController.swift */,
 				C15550EC2F54B987007287B1 /* Main.storyboard */,
+				22E4077D2F6AAC6500BC3271 /* AjouterEvenementViewController.swift */,
 				221E216A2F699FCA00B55ED8 /* Graphique.swift */,
 				C15550EF2F54B98B007287B1 /* Assets.xcassets */,
 				C15550F12F54B98B007287B1 /* LaunchScreen.storyboard */,
@@ -145,6 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C15550EB2F54B987007287B1 /* ViewController.swift in Sources */,
+				22E4077E2F6AAC6500BC3271 /* AjouterEvenementViewController.swift in Sources */,
 				C15550FB2F54B9F9007287B1 /* DexcomModels.swift in Sources */,
 				C15550E72F54B987007287B1 /* AppDelegate.swift in Sources */,
 				221E216B2F699FCA00B55ED8 /* Graphique.swift in Sources */,
