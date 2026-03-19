@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Cette application a besoin d&apos;accéder à la galerie pour sélectionner des photos de repas.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Cette application a besoin d&apos;accéder à la caméra pour prendre des photos de repas.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
