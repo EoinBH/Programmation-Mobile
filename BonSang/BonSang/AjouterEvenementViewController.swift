@@ -7,15 +7,16 @@
 
 import UIKit
 
-class AddEventViewController: UIViewController,
+class AjouterEvenementViewController: UIViewController,
                               UITableViewDataSource,
                               UITableViewDelegate,
                               UIImagePickerControllerDelegate,
                               UINavigationControllerDelegate {
 
     // MARK: - Outlets
+    
     @IBOutlet weak var tableView: UITableView!
-
+    
     // MARK: - Model
     struct Meal {
         let image: UIImage
