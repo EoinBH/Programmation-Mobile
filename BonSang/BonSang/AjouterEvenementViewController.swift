@@ -21,6 +21,10 @@ class AjouterEvenementViewController: UIViewController,
     struct Meal {
         let image: UIImage
         let date: Date
+        let carbs: Int
+        let proteins: Int
+        let calories: Int
+        let note: String
     }
 
     var meals: [Meal] = []
@@ -47,13 +51,27 @@ class AjouterEvenementViewController: UIViewController,
 
         let meal = meals[indexPath.row]
 
-        cell.textLabel?.text = DateFormatter.localizedString(
+        let dateText = DateFormatter.localizedString(
             from: meal.date,
             dateStyle: .short,
             timeStyle: .short
         )
 
+//        cell.textLabel?.text = meal.note.isEmpty ? "Repas" : meal.note
+//
+//        cell.detailTextLabel?.text = """
+//        \(dateText)
+//        \(meal.carbs)g glucides \(meal.proteins)g prot \(meal.calories) kcal
+//        """
+        
+        cell.textLabel?.text = "\(meal.note) • \(meal.carbs)g glucides"
+
+        cell.detailTextLabel?.text = "\(dateText) • \(meal.carbs)g gluc • \(meal.calories) kcal"
+        
         cell.imageView?.image = meal.image
+        
+        cell.imageView?.layer.cornerRadius = 8
+        cell.imageView?.clipsToBounds = true
 
         return cell
     }
@@ -96,16 +114,49 @@ class AjouterEvenementViewController: UIViewController,
 
         if let image = info[.originalImage] as? UIImage {
 
-            let newMeal = Meal(image: image, date: Date())
-            meals.append(newMeal)
-
-            tableView.reloadData()
+            picker.dismiss(animated: true) {
+                self.presentMealForm(with: image)
+            }
         }
-
-        picker.dismiss(animated: true)
     }
 
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
+    }
+    
+    func presentMealForm(with image: UIImage) {
+
+        let alert = UIAlertController(title: "Infos du repas",
+                                      message: "Ajoutez les détails",
+                                      preferredStyle: .alert)
+
+        alert.addTextField { $0.placeholder = "Glucides (g)" }
+        alert.addTextField { $0.placeholder = "Protéines (g)" }
+        alert.addTextField { $0.placeholder = "Calories" }
+        alert.addTextField { $0.placeholder = "Description" }
+
+        alert.addAction(UIAlertAction(title: "Annuler", style: .cancel))
+
+        alert.addAction(UIAlertAction(title: "Ajouter", style: .default) { _ in
+
+            let carbs = Int(alert.textFields?[0].text ?? "") ?? 0
+            let proteins = Int(alert.textFields?[1].text ?? "") ?? 0
+            let calories = Int(alert.textFields?[2].text ?? "") ?? 0
+            let note = alert.textFields?[3].text ?? ""
+
+            let newMeal = Meal(
+                image: image,
+                date: Date(),
+                carbs: carbs,
+                proteins: proteins,
+                calories: calories,
+                note: note
+            )
+
+            self.meals.append(newMeal)
+            self.tableView.reloadData()
+        })
+
+        self.present(alert, animated: true)
     }
 }
