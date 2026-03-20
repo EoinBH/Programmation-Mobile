@@ -56,15 +56,45 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Qp-pR-ijm" customClass="GraphView" customModule="BonSang" customModuleProvider="target">
+                                <rect key="frame" x="16" y="433" width="361" height="380"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="KSg-Qx-frC">
+                                <rect key="frame" x="31" y="331" width="131" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="First"/>
+                                    <segment title="Second"/>
+                                </segments>
+                                <connections>
+                                    <action selector="timeRangeChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="EAX-lf-fyA"/>
+                                </connections>
+                            </segmentedControl>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="o0Y-qf-zz4">
+                                <rect key="frame" x="212" y="331" width="131" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="First"/>
+                                    <segment title="Second"/>
+                                </segments>
+                                <connections>
+                                    <action selector="unitChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="9pq-gI-cZW"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.75138688407326104" green="0.88314569971633061" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     </view>
                     <navigationItem key="navigationItem" id="K8F-Tc-PFd"/>
                     <connections>
+                        <outlet property="graphView" destination="7Qp-pR-ijm" id="6eX-hL-vI7"/>
                         <outlet property="loginButton" destination="MGX-6B-qiw" id="AuH-Xc-dBB"/>
-                        <outlet property="mgdlLabel" destination="f16-Kg-nbX" id="FMa-4q-cQ5"/>
-                        <outlet property="mmolLabel" destination="sOe-hJ-43r" id="IGe-Ni-K6h"/>
+                        <outlet property="mgdlLabel" destination="f16-Kg-nbX" id="eHu-gc-cV6"/>
+                        <outlet property="mmolLabel" destination="sOe-hJ-43r" id="LA9-Xa-9r4"/>
+                        <outlet property="timeRangeSegmentedControl" destination="KSg-Qx-frC" id="X18-0r-vRB"/>
+                        <outlet property="unitSegmentedControl" destination="o0Y-qf-zz4" id="lTU-H2-0zz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -157,6 +187,7 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="vzq-9W-bDi" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="2wB-Z9-dey">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>

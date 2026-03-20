@@ -8,19 +8,60 @@
 import UIKit
 import SafariServices
 
-class ViewController: UIViewController, SFSafariViewControllerDelegate {
+enum GlucoseUnit {
+    case mmolL
+    case mgdL
+}
 
+class ViewController: UIViewController, SFSafariViewControllerDelegate {
+    
+    // MARK: - OUTLETS
+    
     @IBOutlet weak var loginButton: UIButton!
     
+    @IBOutlet weak var mmolLabel: UILabel!
+    
+    @IBOutlet weak var mgdlLabel: UILabel!
+    
+    @IBOutlet weak var timeRangeSegmentedControl: UISegmentedControl!
+    
+    @IBOutlet weak var unitSegmentedControl: UISegmentedControl!
+    
+    
+    @IBOutlet weak var graphView: GraphView!
+    
+    // MARK: - DATA
     var glucoseRecords: [GlucoseRecord] = []
-    
     var glucoseTimer: Timer?
-    
     var safariVC: SFSafariViewController?
+
+    var selectedHours: Int = 3
+    var selectedUnit: GlucoseUnit = .mmolL
 
     struct AuthStatus: Decodable {
         let authenticated: Bool
     }
+    
+    // MARK: - LIFECYCLE
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+            
+        configureSegmentedControls()
+            
+        graphView.selectedHours = selectedHours
+        graphView.selectedUnit = selectedUnit
+            
+        checkAuthStatus()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        glucoseTimer?.invalidate()
+        glucoseTimer = nil
+    }
+    
+    // MARK: - AUTH
     
     func checkAuthStatus() {
 
@@ -65,12 +106,6 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
         }.resume()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        checkAuthStatus()
-        //fetchGlucose()
-    }
-    
     @IBAction func loginButtonTapped(_ sender: UIButton) {
         loginWithDexcom()
     }
@@ -89,6 +124,48 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
         }
     }
     
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+
+        print("Login window closed")
+        
+        loginButton.isHidden = true
+        
+        fetchGlucose()
+    }
+    
+    // MARK: - SEGMENTED CONTROLS
+    
+    func configureSegmentedControls() {
+        timeRangeSegmentedControl.removeAllSegments()
+        ["3h","6h","12h","24h"].enumerated().forEach {
+            timeRangeSegmentedControl.insertSegment(withTitle: $0.element, at: $0.offset, animated: false)
+        }
+        timeRangeSegmentedControl.selectedSegmentIndex = 0
+            
+        unitSegmentedControl.removeAllSegments()
+        ["mmol/L","mg/dL"].enumerated().forEach {
+            unitSegmentedControl.insertSegment(withTitle: $0.element, at: $0.offset, animated: false)
+        }
+        unitSegmentedControl.selectedSegmentIndex = 0
+    }
+    
+    @IBAction func timeRangeChanged(_ sender: UISegmentedControl) {
+        selectedHours = [3,6,12,24][sender.selectedSegmentIndex]
+        graphView.selectedHours = selectedHours
+        fetchGlucose()
+    }
+    
+    @IBAction func unitChanged(_ sender: UISegmentedControl) {
+        selectedUnit = sender.selectedSegmentIndex == 0 ? .mmolL : .mgdL
+        graphView.selectedUnit = selectedUnit
+                
+        updateLabels()
+        drawGraph()
+    }
+    
+    
+    // MARK: - TIMER
+
     func startGlucoseUpdates() {
 
         if glucoseTimer != nil {
@@ -100,21 +177,17 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
             self.fetchGlucose()
         }
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
 
-        glucoseTimer?.invalidate()
-        glucoseTimer = nil
-    }
-
-    // MARK: - Fetch Glucose Data
+    // MARK: - FETCH
 
     func fetchGlucose() {
 
-        let urlString = "https://india-unfightable-overbearingly.ngrok-free.dev/dexcom/egvs"
+        let urlString = "https://india-unfightable-overbearingly.ngrok-free.dev/dexcom/egvs?hours=\(selectedHours)"
         guard let url = URL(string: urlString) else { return }
-
+        
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        
         URLSession.shared.dataTask(with: url) { data, response, error in
 
             if let error = error {
@@ -131,15 +204,11 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
                 let decoded = try JSONDecoder().decode(DexcomResponse.self, from: data)
 
                 DispatchQueue.main.async {
-                    /*if decoded.records.count != self.glucoseRecords.count {
-                        print("New glucose value detected")
-                        self.glucoseRecords = decoded.records
-                        self.drawGraph()
-                    }*/
                     self.glucoseRecords = decoded.records
                     print("Fetched \(self.glucoseRecords.count) glucose values")
 
                     self.drawGraph()
+                    self.updateLabels()
                     self.startGlucoseUpdates()
                 }
 
@@ -150,117 +219,27 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
         }.resume()
     }
 
-    @IBOutlet weak var mmolLabel: UILabel!
-    
-    @IBOutlet weak var mgdlLabel: UILabel!
-    
-    func addPoint(at point: CGPoint) {
-        let radius: CGFloat = 4
-
-        let circlePath = UIBezierPath(
-            arcCenter: point,
-            radius: radius,
-            startAngle: 0,
-            endAngle: CGFloat.pi * 2,
-            clockwise: true
-        )
-
-        let circleLayer = CAShapeLayer()
-        circleLayer.path = circlePath.cgPath
+    // MARK: - GRAPH
         
-        // Style du point
-        circleLayer.fillColor = UIColor.black.cgColor
-        circleLayer.strokeColor = UIColor.black.cgColor
-        circleLayer.lineWidth = 2
-
-        circleLayer.name = "graphLayer"
-
-        view.layer.addSublayer(circleLayer)
-    }
-    
-    // MARK: - Draw Graph
-    
     func drawGraph() {
+        let sorted = glucoseRecords.sorted { $0.systemTime < $1.systemTime }
+        graphView.glucoseRecords = sorted
+    }
 
-        print("Drawing graph with \(glucoseRecords.count) points")
-
-        // Remove previous graph layers
-        view.layer.sublayers?.removeAll(where: { $0.name == "graphLayer" })
-
-        guard glucoseRecords.count > 1 else {
-            print("Not enough data to draw graph")
+    // MARK: - LABELS
+        
+    func updateLabels() {
+        guard let last = glucoseRecords.sorted(by: { $0.systemTime < $1.systemTime }).last else {
+            mmolLabel.text = "--"
+            mgdlLabel.text = "--"
             return
         }
 
-        let sorted = glucoseRecords.sorted {
-            $0.systemTime < $1.systemTime
-        }
-        
-        if let latestRecord = sorted.last {
-            let mgdlValue = latestRecord.value
-            let mmolValue = mgdlValue / 18.0
+        let mgdl = last.value
+        let mmol = mgdl / 18.0
 
-            mmolLabel.text = String(format: "%.1f mmol/L", mmolValue)
-            mgdlLabel.text = String(format: "%.0f mg/dL", mgdlValue)
-        }
-        
-//        let values = sorted.map { $0.value }
-//
-//        guard let minValue = values.min(),
-//              let maxValue = values.max() else { return }
-        let values = sorted.map { $0.value }
-
-        // Axe Y fixe : 0 à 22 mmol/L → 0 à 396 mg/dL
-        let minValue: Double = 0
-        let maxValue: Double = 396
-
-        let path = UIBezierPath()
-
-        let graphHeight: CGFloat = 250
-        let graphWidth = view.bounds.width - 40
-
-        let startX: CGFloat = 20
-        let bottomY = view.bounds.height - 120
-
-        //let valueRange = maxValue - minValue == 0 ? 1 : maxValue - minValue
-        let valueRange = maxValue - minValue
-
-        for (index, value) in values.enumerated() {
-
-            let xPosition = startX + CGFloat(index) * (graphWidth / CGFloat(values.count - 1))
-
-            let normalized = (value - minValue) / valueRange
-            let yPosition = bottomY - CGFloat(normalized) * graphHeight
-
-            let point = CGPoint(x: xPosition, y: yPosition)
-
-            if index == 0 {
-                path.move(to: point)
-            } else {
-                path.addLine(to: point)
-            }
-
-            // Ajout du point visuel
-            addPoint(at: point)
-        }
-
-        let shapeLayer = CAShapeLayer()
-        shapeLayer.path = path.cgPath
-        shapeLayer.strokeColor = UIColor.black.cgColor
-        shapeLayer.fillColor = UIColor.clear.cgColor
-        shapeLayer.lineWidth = 2
-        shapeLayer.name = "graphLayer"
-
-        view.layer.addSublayer(shapeLayer)
-    }
-    
-    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-
-        print("Login window closed")
-        
-        loginButton.isHidden = true
-        
-        fetchGlucose()
+        mmolLabel.text = String(format: "%.1f mmol/L", mmol)
+        mgdlLabel.text = String(format: "%.0f mg/dL", mgdl)
     }
     
 }

@@ -174,8 +174,12 @@ app.get('/dexcom/egvs', async (req, res) => {
     try {
         const accessToken = await ensureValidAccessToken();
 
+        const hours = parseInt(req.query.hours) || 3;
+
         const now = new Date();
-        const startDate = new Date(now.getTime() - 3 * 60 * 60 * 1000);
+        const startDate = new Date(now.getTime() - hours * 60 * 60 * 1000);
+
+        console.log(`Fetching Dexcom data for last ${hours} hours`);
 
         const response = await axios.get(
             'https://sandbox-api.dexcom.com/v3/users/self/egvs',
@@ -189,6 +193,8 @@ app.get('/dexcom/egvs', async (req, res) => {
                 }
             }
         );
+
+        console.log("Dexcom raw response:", response.data);
 
         res.json(response.data);
 
