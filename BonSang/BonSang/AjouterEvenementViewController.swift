@@ -46,8 +46,8 @@ class AjouterEvenementViewController: UIViewController,
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: "repas",
-                                                 for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "repasCell",
+                                                 for: indexPath) as! MealCell
 
         let meal = meals[indexPath.row]
 
@@ -57,21 +57,17 @@ class AjouterEvenementViewController: UIViewController,
             timeStyle: .short
         )
 
-//        cell.textLabel?.text = meal.note.isEmpty ? "Repas" : meal.note
-//
-//        cell.detailTextLabel?.text = """
-//        \(dateText)
-//        \(meal.carbs)g glucides \(meal.proteins)g prot \(meal.calories) kcal
-//        """
-        
-        cell.textLabel?.text = "\(meal.note) • \(meal.carbs)g glucides"
+        cell.titleLabel.text = meal.note.isEmpty ? "Repas" : meal.note
+        cell.dateLabel.text = dateText
 
-        cell.detailTextLabel?.text = "\(dateText) • \(meal.carbs)g gluc • \(meal.calories) kcal"
-        
-        cell.imageView?.image = meal.image
-        
-        cell.imageView?.layer.cornerRadius = 8
-        cell.imageView?.clipsToBounds = true
+        cell.nutritionLabel.text = "\(meal.carbs)g gluc • \(meal.proteins)g prot • \(meal.calories) kcal"
+
+        cell.mealImageView.image = meal.image
+
+        // style image
+        cell.mealImageView.layer.cornerRadius = 10
+        cell.mealImageView.clipsToBounds = true
+        cell.mealImageView.contentMode = .scaleAspectFill
 
         return cell
     }

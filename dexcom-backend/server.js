@@ -24,7 +24,7 @@ app.get('/auth/dexcom', (req, res) => {
         `?client_id=${process.env.DEXCOM_CLIENT_ID}` +
         `&redirect_uri=${process.env.DEXCOM_REDIRECT_URI}` +
         `&response_type=code` +
-        `&scope=offline_access`;
+        `&scope=offline_access%20egv`;
 
     res.redirect(authURL);
 });
@@ -176,10 +176,34 @@ app.get('/dexcom/egvs', async (req, res) => {
 
         const hours = parseInt(req.query.hours) || 3;
 
-        const now = new Date();
-        const startDate = new Date(now.getTime() - hours * 60 * 60 * 1000);
+        const rangeResponse = await axios.get(
+            'https://sandbox-api.dexcom.com/v3/users/self/dataRange',
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
 
-        console.log(`Fetching Dexcom data for last ${hours} hours`);
+        const dataRange = rangeResponse.data.egvs;
+
+        const rangeStart = new Date(dataRange.start.systemTime);
+        const rangeEnd = new Date(dataRange.end.systemTime);
+
+        console.log("Sandbox range:");
+        console.log("Start:", rangeStart);
+        console.log("End:", rangeEnd);
+
+        let endDate = new Date(rangeEnd);
+        let startDate = new Date(endDate.getTime() - hours * 60 * 60 * 1000);
+
+        if (startDate < rangeStart) {
+            startDate = rangeStart;
+        }
+
+        console.log(`Simulating last ${hours} hours`);
+        console.log("Query Start:", startDate);
+        console.log("Query End:", endDate);
 
         const response = await axios.get(
             'https://sandbox-api.dexcom.com/v3/users/self/egvs',
@@ -189,7 +213,7 @@ app.get('/dexcom/egvs', async (req, res) => {
                 },
                 params: {
                     startDate: formatDexcomDate(startDate),
-                    endDate: formatDexcomDate(now)
+                    endDate: formatDexcomDate(endDate)
                 }
             }
         );
@@ -199,8 +223,62 @@ app.get('/dexcom/egvs', async (req, res) => {
         res.json(response.data);
 
     } catch (error) {
-        console.error(error.response?.data || error.message);
+        const err = error.response?.data;
+
+        console.error(err || error.message);
+
+        if (err?.error?.includes("not authorized")) {
+            console.log("Token invalid. Clearing and forcing re-auth.");
+
+            dexcomTokens = {
+                access_token: null,
+                refresh_token: null,
+                expires_at: null
+            };
+
+            return res.status(401).send("Re-authentication required.");
+        }
+
         res.status(500).send("Failed to fetch glucose data.");
+    }
+});
+
+/*
+    Reset route au cas où
+*/
+app.get('/auth/reset', (req, res) => {
+    dexcomTokens = {
+        access_token: null,
+        refresh_token: null,
+        expires_at: null
+    };
+
+    console.log("Tokens cleared. Forcing re-authentication.");
+    res.redirect('/auth/dexcom');
+});
+
+/*
+    Route pour déterminer quand les données sont disponibles (Sanbox)
+*/
+app.get('/dexcom/dataRange', async (req, res) => {
+    try {
+        const accessToken = await ensureValidAccessToken();
+
+        const response = await axios.get(
+            'https://sandbox-api.dexcom.com/v3/users/self/dataRange',
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        console.log("Data range:", response.data);
+        res.json(response.data);
+
+    } catch (error) {
+        console.error(error.response?.data || error.message);
+        res.status(500).send("Failed to fetch data range.");
     }
 });
 
