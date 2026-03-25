@@ -18,25 +18,59 @@ class AjouterEvenementViewController: UIViewController,
     @IBOutlet weak var tableView: UITableView!
     
     // MARK: - Model
-    enum EventType {
-        case meal(MealData)
-        case activity(ActivityData)
-    }
-
-    struct MealData {
-        let image: UIImage
+    struct MealData: Codable {
+        let imageData: Data
         let carbs: Int
         let proteins: Int
         let calories: Int
     }
 
-    struct ActivityData {
+    struct ActivityData: Codable {
         let iconName: String
         let duration: Int
         let intensity: String
     }
 
-    struct Event {
+    enum EventType: Codable {
+        case meal(MealData)
+        case activity(ActivityData)
+
+        private enum CodingKeys: String, CodingKey {
+            case type, meal, activity
+        }
+
+        private enum EventKind: String, Codable {
+            case meal, activity
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            switch self {
+            case .meal(let meal):
+                try container.encode(EventKind.meal, forKey: .type)
+                try container.encode(meal, forKey: .meal)
+            case .activity(let activity):
+                try container.encode(EventKind.activity, forKey: .type)
+                try container.encode(activity, forKey: .activity)
+            }
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let type = try container.decode(EventKind.self, forKey: .type)
+
+            switch type {
+            case .meal:
+                let meal = try container.decode(MealData.self, forKey: .meal)
+                self = .meal(meal)
+            case .activity:
+                let activity = try container.decode(ActivityData.self, forKey: .activity)
+                self = .activity(activity)
+            }
+        }
+    }
+
+    struct Event: Codable {
         let type: EventType
         let date: Date
         let note: String
@@ -44,12 +78,31 @@ class AjouterEvenementViewController: UIViewController,
 
     var events: [Event] = []
 
+    // MARK: - Save
+    func saveEvents() {
+        let encoder = JSONEncoder()
+        if let data = try? encoder.encode(events) {
+            UserDefaults.standard.set(data, forKey: "events")
+        }
+    }
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.dataSource = self
         tableView.delegate = self
+        
+        loadEvents()
+    }
+
+    func loadEvents() {
+        if let data = UserDefaults.standard.data(forKey: "events") {
+            let decoder = JSONDecoder()
+            if let savedEvents = try? decoder.decode([Event].self, from: data) {
+                self.events = savedEvents
+            }
+        }
     }
 
     // MARK: - TableView
@@ -78,7 +131,7 @@ class AjouterEvenementViewController: UIViewController,
 
         case .meal(let meal):
 
-            cell.mealImageView.image = meal.image
+            cell.mealImageView.image = UIImage(data: meal.imageData)
             cell.mealImageView.tintColor = nil
             cell.mealImageView.contentMode = .scaleAspectFill
 
@@ -160,19 +213,22 @@ class AjouterEvenementViewController: UIViewController,
             let calories = Int(alert.textFields?[2].text ?? "") ?? 0
             let note = alert.textFields?[3].text ?? ""
 
-            let newEvent = Event(
-                type: .meal(MealData(
-                    image: image,
-                    carbs: carbs,
-                    proteins: proteins,
-                    calories: calories
-                )),
-                date: Date(),
-                note: note
-            )
+            if let imageData = image.jpegData(compressionQuality: 0.8) {
+                let newEvent = Event(
+                    type: .meal(MealData(
+                        imageData: imageData,
+                        carbs: carbs,
+                        proteins: proteins,
+                        calories: calories
+                    )),
+                    date: Date(),
+                    note: note
+                )
 
-            self.events.append(newEvent)
-            self.tableView.reloadData()
+                self.events.append(newEvent)
+                self.saveEvents()
+                self.tableView.reloadData()
+            }
         })
 
         self.present(alert, animated: true)
@@ -209,6 +265,7 @@ class AjouterEvenementViewController: UIViewController,
             )
 
             self.events.append(newEvent)
+            self.saveEvents()
             self.tableView.reloadData()
         })
 
