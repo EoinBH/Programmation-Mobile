@@ -18,16 +18,31 @@ class AjouterEvenementViewController: UIViewController,
     @IBOutlet weak var tableView: UITableView!
     
     // MARK: - Model
-    struct Meal {
+    enum EventType {
+        case meal(MealData)
+        case activity(ActivityData)
+    }
+
+    struct MealData {
         let image: UIImage
-        let date: Date
         let carbs: Int
         let proteins: Int
         let calories: Int
+    }
+
+    struct ActivityData {
+        let iconName: String
+        let duration: Int
+        let intensity: String
+    }
+
+    struct Event {
+        let type: EventType
+        let date: Date
         let note: String
     }
 
-    var meals: [Meal] = []
+    var events: [Event] = []
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -40,61 +55,66 @@ class AjouterEvenementViewController: UIViewController,
     // MARK: - TableView
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return meals.count
+        return events.count
     }
 
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: "repasCell",
-                                                 for: indexPath) as! MealCell
-
-        let meal = meals[indexPath.row]
+                                                     for: indexPath) as! MealCell
+        let event = events[indexPath.row]
 
         let dateText = DateFormatter.localizedString(
-            from: meal.date,
+            from: event.date,
             dateStyle: .short,
             timeStyle: .short
         )
 
-        cell.titleLabel.text = meal.note.isEmpty ? "Repas" : meal.note
         cell.dateLabel.text = dateText
+        cell.titleLabel.text = event.note.isEmpty ? "Événement" : event.note
 
-        cell.nutritionLabel.text = "\(meal.carbs)g gluc • \(meal.proteins)g prot • \(meal.calories) kcal"
+        switch event.type {
 
-        cell.mealImageView.image = meal.image
+        case .meal(let meal):
 
-        // style image
-        cell.mealImageView.layer.cornerRadius = 10
-        cell.mealImageView.clipsToBounds = true
-        cell.mealImageView.contentMode = .scaleAspectFill
+            cell.mealImageView.image = meal.image
+            cell.mealImageView.tintColor = nil
+            cell.mealImageView.contentMode = .scaleAspectFill
 
+            cell.nutritionLabel.text =
+            "\(meal.carbs)g gluc • \(meal.proteins)g prot • \(meal.calories) kcal"
+
+        case .activity(let activity):
+
+            cell.mealImageView.image = UIImage(systemName: activity.iconName)
+            cell.mealImageView.tintColor = .systemBlue
+            cell.mealImageView.contentMode = .scaleAspectFit
+
+            cell.nutritionLabel.text =
+            "\(activity.duration) min • Intensité: \(activity.intensity)"
+        }
         return cell
     }
 
     // MARK: - Button Action
     @IBAction func ajouterEvenementTouche(_ sender: UIButton) {
 
-        let alert = UIAlertController(title: "Ajouter une photo",
-                                      message: nil,
-                                      preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Ajouter",
+                                          message: "Choisissez un type",
+                                          preferredStyle: .actionSheet)
 
-        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            alert.addAction(UIAlertAction(title: "Caméra",
-                                         style: .default) { _ in
-                self.openPicker(source: .camera)
+            alert.addAction(UIAlertAction(title: "Repas", style: .default) { _ in
+                self.addMealFlow()
             })
-        }
 
-        alert.addAction(UIAlertAction(title: "Galerie",
-                                     style: .default) { _ in
-            self.openPicker(source: .photoLibrary)
-        })
+            alert.addAction(UIAlertAction(title: "Activité", style: .default) { _ in
+                self.presentActivityForm()
+            })
 
-        alert.addAction(UIAlertAction(title: "Annuler",
-                                     style: .cancel))
+            alert.addAction(UIAlertAction(title: "Annuler", style: .cancel))
 
-        present(alert, animated: true)
+            present(alert, animated: true)
     }
 
     // MARK: - Image Picker
@@ -140,19 +160,92 @@ class AjouterEvenementViewController: UIViewController,
             let calories = Int(alert.textFields?[2].text ?? "") ?? 0
             let note = alert.textFields?[3].text ?? ""
 
-            let newMeal = Meal(
-                image: image,
+            let newEvent = Event(
+                type: .meal(MealData(
+                    image: image,
+                    carbs: carbs,
+                    proteins: proteins,
+                    calories: calories
+                )),
                 date: Date(),
-                carbs: carbs,
-                proteins: proteins,
-                calories: calories,
                 note: note
             )
 
-            self.meals.append(newMeal)
+            self.events.append(newEvent)
             self.tableView.reloadData()
         })
 
         self.present(alert, animated: true)
+    }
+    
+    func presentActivityForm() {
+
+        let alert = UIAlertController(title: "Activité",
+                                      message: "Détails",
+                                      preferredStyle: .alert)
+
+        alert.addTextField { $0.placeholder = "Type (course, vélo...)" }
+        alert.addTextField { $0.placeholder = "Durée (minutes)" }
+        alert.addTextField { $0.placeholder = "Intensité" }
+        alert.addTextField { $0.placeholder = "Description" }
+
+        alert.addAction(UIAlertAction(title: "Annuler", style: .cancel))
+
+        alert.addAction(UIAlertAction(title: "Ajouter", style: .default) { _ in
+
+            let type = alert.textFields?[0].text ?? ""
+            let duration = Int(alert.textFields?[1].text ?? "") ?? 0
+            let intensity = alert.textFields?[2].text ?? ""
+            let note = alert.textFields?[3].text ?? ""
+
+            let newEvent = Event(
+                type: .activity(ActivityData(
+                    iconName: self.iconForActivity(type),
+                    duration: duration,
+                    intensity: intensity
+                )),
+                date: Date(),
+                note: note
+            )
+
+            self.events.append(newEvent)
+            self.tableView.reloadData()
+        })
+
+        present(alert, animated: true)
+    }
+    
+    func addMealFlow() {
+
+        let alert = UIAlertController(title: "Ajouter une photo",
+                                      message: nil,
+                                      preferredStyle: .actionSheet)
+
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            alert.addAction(UIAlertAction(title: "Caméra",
+                                         style: .default) { _ in
+                self.openPicker(source: .camera)
+            })
+        }
+
+        alert.addAction(UIAlertAction(title: "Galerie",
+                                     style: .default) { _ in
+            self.openPicker(source: .photoLibrary)
+        })
+
+        alert.addAction(UIAlertAction(title: "Annuler",
+                                     style: .cancel))
+
+        present(alert, animated: true)
+    }
+    
+    func iconForActivity(_ type: String) -> String {
+        switch type.lowercased() {
+        case "course": return "figure.run"
+        case "vélo": return "bicycle"
+        case "natation": return "figure.pool.swim"
+        case "marche": return "figure.walk"
+        default: return "flame"
+        }
     }
 }
