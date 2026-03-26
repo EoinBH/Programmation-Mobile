@@ -108,14 +108,14 @@ class GraphView: UIView {
             y: yPosition(for: warning),
             in: plotRect,
             color: .systemOrange,
-            label: "Alerte \(formatValue(warning))"
+            label: "Alerte \n \(formatValue(warning))"
         )
         
         drawThresholdLine(
             y: yPosition(for: urgent),
             in: plotRect,
             color: .systemRed,
-            label: "Urgent \(formatValue(urgent))"
+            label: "Urgent \n \(formatValue(urgent))"
         )
         
         var points: [CGPoint] = []
@@ -316,7 +316,7 @@ class GraphView: UIView {
         
         let titleAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 12, weight: .medium),
-            .foregroundColor: UIColor.secondaryLabel
+            .foregroundColor: UIColor.black
         ]
         
         let valueAttributes: [NSAttributedString.Key: Any] = [
@@ -454,7 +454,7 @@ class GraphView: UIView {
         
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 11, weight: .medium),
-            .foregroundColor: UIColor.secondaryLabel
+            .foregroundColor: UIColor.black
         ]
         
         for (index, label) in labels.enumerated() {

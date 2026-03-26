@@ -296,6 +296,7 @@ class AjouterEvenementViewController: UIViewController,
         present(alert, animated: true)
     }
     
+    // MARK: - Icons
     func iconForActivity(_ type: String) -> String {
         switch type.lowercased() {
         case "course": return "figure.run"
@@ -304,5 +305,41 @@ class AjouterEvenementViewController: UIViewController,
         case "marche": return "figure.walk"
         default: return "flame"
         }
+    }
+    
+    // MARK: - Swipe Actions
+
+    func tableView(_ tableView: UITableView,
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+    -> UISwipeActionsConfiguration? {
+
+        let deleteAction = UIContextualAction(style: .destructive, title: "Supprimer") { _, _, completion in
+            
+            let alert = UIAlertController(
+                title: "Supprimer",
+                message: "Voulez-vous supprimer cet événement ?",
+                preferredStyle: .alert
+            )
+
+            alert.addAction(UIAlertAction(title: "Annuler", style: .cancel) { _ in
+                completion(false)
+            })
+
+            alert.addAction(UIAlertAction(title: "Supprimer", style: .destructive) { _ in
+                
+                self.events.remove(at: indexPath.row)
+                self.saveEvents()
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+                
+                completion(true)
+            })
+
+            self.present(alert, animated: true)
+        }
+
+        let config = UISwipeActionsConfiguration(actions: [deleteAction])
+        config.performsFirstActionWithFullSwipe = false // important !
+
+        return config
     }
 }

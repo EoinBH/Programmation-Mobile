@@ -240,6 +240,9 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
 
         mmolLabel.text = String(format: "%.1f mmol/L", mmol)
         mgdlLabel.text = String(format: "%.0f mg/dL", mgdl)
+        
+        mmolLabel.isHidden = selectedUnit == .mgdL
+        mgdlLabel.isHidden = selectedUnit == .mmolL
     }
     
 }
