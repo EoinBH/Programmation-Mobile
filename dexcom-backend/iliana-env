@@ -1,9 +1,0 @@
-PORT=3000
-
-DEXCOM_CLIENT_ID=DJ8sbtcImmOLyA7w4cMujbKdTEEryYBe
-DEXCOM_CLIENT_SECRET=n3tiLBTxNwMfeO3a
-DEXCOM_REDIRECT_URI=https://india-unfightable-overbearingly.ngrok-free.dev/oauth/callback
-
-USDA_API_KEY=QRG7obQgZoTXcLMpPjLGeWky1iMTuaw8okATppmT
-
-MYMEMORY_EMAIL=benchikh.iliana@gmail.com

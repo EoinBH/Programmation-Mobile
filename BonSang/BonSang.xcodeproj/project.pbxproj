@@ -18,6 +18,12 @@
 		C15550F02F54B98B007287B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C15550EF2F54B98B007287B1 /* Assets.xcassets */; };
 		C15550F32F54B98B007287B1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C15550F12F54B98B007287B1 /* LaunchScreen.storyboard */; };
 		C15550FB2F54B9F9007287B1 /* DexcomModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15550FA2F54B9F9007287B1 /* DexcomModels.swift */; };
+		C1EA5E3D2F767C7C00CB1F82 /* NutritionAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EA5E372F767C7700CB1F82 /* NutritionAPIService.swift */; };
+		C1EA5E3E2F767C7C00CB1F82 /* MealSummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EA5E382F767C7800CB1F82 /* MealSummaryViewController.swift */; };
+		C1EA5E3F2F767C7C00CB1F82 /* AjouterRepasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EA5E392F767C7900CB1F82 /* AjouterRepasViewController.swift */; };
+		C1EA5E402F767C7C00CB1F82 /* MealHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EA5E3A2F767C7A00CB1F82 /* MealHistoryViewController.swift */; };
+		C1EA5E412F767C7C00CB1F82 /* NutritionFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EA5E3B2F767C7B00CB1F82 /* NutritionFormatting.swift */; };
+		C1EA5E422F767C7C00CB1F82 /* NutritionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EA5E3C2F767C7C00CB1F82 /* NutritionModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +40,12 @@
 		C15550F22F54B98B007287B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C15550F42F54B98B007287B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C15550FA2F54B9F9007287B1 /* DexcomModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DexcomModels.swift; sourceTree = "<group>"; };
+		C1EA5E372F767C7700CB1F82 /* NutritionAPIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NutritionAPIService.swift; sourceTree = "<group>"; };
+		C1EA5E382F767C7800CB1F82 /* MealSummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealSummaryViewController.swift; sourceTree = "<group>"; };
+		C1EA5E392F767C7900CB1F82 /* AjouterRepasViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AjouterRepasViewController.swift; sourceTree = "<group>"; };
+		C1EA5E3A2F767C7A00CB1F82 /* MealHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MealHistoryViewController.swift; sourceTree = "<group>"; };
+		C1EA5E3B2F767C7B00CB1F82 /* NutritionFormatting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NutritionFormatting.swift; sourceTree = "<group>"; };
+		C1EA5E3C2F767C7C00CB1F82 /* NutritionModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NutritionModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +85,12 @@
 				C15550EA2F54B987007287B1 /* ViewController.swift */,
 				22CCFB6F2F6D484F003FE2B5 /* GraphView.swift */,
 				C15550EC2F54B987007287B1 /* Main.storyboard */,
+				C1EA5E392F767C7900CB1F82 /* AjouterRepasViewController.swift */,
+				C1EA5E3A2F767C7A00CB1F82 /* MealHistoryViewController.swift */,
+				C1EA5E382F767C7800CB1F82 /* MealSummaryViewController.swift */,
+				C1EA5E372F767C7700CB1F82 /* NutritionAPIService.swift */,
+				C1EA5E3B2F767C7B00CB1F82 /* NutritionFormatting.swift */,
+				C1EA5E3C2F767C7C00CB1F82 /* NutritionModels.swift */,
 				22E4077D2F6AAC6500BC3271 /* AjouterEvenementViewController.swift */,
 				221E216A2F699FCA00B55ED8 /* Graphique.swift */,
 				C15550EF2F54B98B007287B1 /* Assets.xcassets */,
@@ -155,11 +173,17 @@
 			files = (
 				C111F9A62F718B7E00A5AC74 /* MealCell.swift in Sources */,
 				C15550EB2F54B987007287B1 /* ViewController.swift in Sources */,
+				C1EA5E402F767C7C00CB1F82 /* MealHistoryViewController.swift in Sources */,
 				22E4077E2F6AAC6500BC3271 /* AjouterEvenementViewController.swift in Sources */,
 				22CCFB702F6D484F003FE2B5 /* GraphView.swift in Sources */,
+				C1EA5E3D2F767C7C00CB1F82 /* NutritionAPIService.swift in Sources */,
+				C1EA5E422F767C7C00CB1F82 /* NutritionModels.swift in Sources */,
 				C15550FB2F54B9F9007287B1 /* DexcomModels.swift in Sources */,
+				C1EA5E3E2F767C7C00CB1F82 /* MealSummaryViewController.swift in Sources */,
 				C15550E72F54B987007287B1 /* AppDelegate.swift in Sources */,
+				C1EA5E412F767C7C00CB1F82 /* NutritionFormatting.swift in Sources */,
 				221E216B2F699FCA00B55ED8 /* Graphique.swift in Sources */,
+				C1EA5E3F2F767C7C00CB1F82 /* AjouterRepasViewController.swift in Sources */,
 				C15550E92F54B987007287B1 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -310,6 +334,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = URDULFVQ6T;
@@ -327,6 +352,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "eoin.brereton-hurley-univ-lyon2.fr.BonSang";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -338,6 +364,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = URDULFVQ6T;
@@ -355,6 +382,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "eoin.brereton-hurley-univ-lyon2.fr.BonSang";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
