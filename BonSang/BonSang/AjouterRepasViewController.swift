@@ -4,7 +4,6 @@ final class AjouterRepasViewController: UIViewController {
 
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchButton: UIButton!
-    @IBOutlet weak var searchInfoLabel: UILabel!
 
     @IBOutlet weak var resultsTableView: UITableView!
     @IBOutlet weak var selectedFoodsTableView: UITableView!
@@ -55,9 +54,9 @@ final class AjouterRepasViewController: UIViewController {
 
         searchTextField.delegate = self
 
-        searchInfoLabel.text = "Les correspondances proposées viennent du back, avec la même logique que l’API nutritionnelle."
-        searchInfoLabel.numberOfLines = 0
-        searchInfoLabel.textColor = .secondaryLabel
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
 
         emptyStateLabel.text = "Aucun plat ajouté pour le moment."
         emptyStateLabel.numberOfLines = 0
@@ -72,6 +71,10 @@ final class AjouterRepasViewController: UIViewController {
         saveMealButton.alpha = 0.55
 
         populateIfEditing()
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 
     private func populateIfEditing() {
@@ -91,6 +94,8 @@ final class AjouterRepasViewController: UIViewController {
     }
 
     @IBAction func searchTapped(_ sender: UIButton) {
+        view.endEditing(true)
+
         guard let text = searchTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else {
             showSimpleAlert(title: "Recherche vide", message: "Entre le nom d’un plat avant de lancer la recherche.")
             return
@@ -105,9 +110,6 @@ final class AjouterRepasViewController: UIViewController {
                 loading.dismiss(animated: true) { [weak self] in
                     guard let self else { return }
                     self.searchResults = response.results
-                    self.searchInfoLabel.text = response.results.isEmpty
-                        ? "Aucune correspondance trouvée. Essaie un nom plus simple ou plus précis."
-                        : "Recherche traduite en “\(response.translatedQuery)” • \(response.results.count) résultat(s)."
                 }
 
             } catch {
@@ -119,6 +121,8 @@ final class AjouterRepasViewController: UIViewController {
     }
 
     @IBAction func saveMealTapped(_ sender: UIButton) {
+        view.endEditing(true)
+
         guard !selectedFoods.isEmpty else {
             showSimpleAlert(title: "Repas incomplet", message: "Ajoute au moins un plat avant de valider.")
             return
@@ -259,6 +263,7 @@ extension AjouterRepasViewController: UITableViewDataSource, UITableViewDelegate
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        view.endEditing(true)
         tableView.deselectRow(at: indexPath, animated: true)
 
         if tableView == resultsTableView {
@@ -283,6 +288,7 @@ extension AjouterRepasViewController: UITableViewDataSource, UITableViewDelegate
 
 extension AjouterRepasViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
         searchTapped(searchButton)
         return true
     }

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		221E216B2F699FCA00B55ED8 /* Graphique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221E216A2F699FCA00B55ED8 /* Graphique.swift */; };
 		22CCFB702F6D484F003FE2B5 /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CCFB6F2F6D484F003FE2B5 /* GraphView.swift */; };
 		22E4077E2F6AAC6500BC3271 /* AjouterEvenementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E4077D2F6AAC6500BC3271 /* AjouterEvenementViewController.swift */; };
 		C111F9A62F718B7E00A5AC74 /* MealCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C111F9A52F718B7E00A5AC74 /* MealCell.swift */; };
@@ -27,7 +26,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		221E216A2F699FCA00B55ED8 /* Graphique.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graphique.swift; sourceTree = "<group>"; };
 		22CCFB6F2F6D484F003FE2B5 /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		22E4077D2F6AAC6500BC3271 /* AjouterEvenementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AjouterEvenementViewController.swift; sourceTree = "<group>"; };
 		C111F9A52F718B7E00A5AC74 /* MealCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealCell.swift; sourceTree = "<group>"; };
@@ -92,7 +90,6 @@
 				C1EA5E3B2F767C7B00CB1F82 /* NutritionFormatting.swift */,
 				C1EA5E3C2F767C7C00CB1F82 /* NutritionModels.swift */,
 				22E4077D2F6AAC6500BC3271 /* AjouterEvenementViewController.swift */,
-				221E216A2F699FCA00B55ED8 /* Graphique.swift */,
 				C15550EF2F54B98B007287B1 /* Assets.xcassets */,
 				C15550F12F54B98B007287B1 /* LaunchScreen.storyboard */,
 				C15550F42F54B98B007287B1 /* Info.plist */,
@@ -182,7 +179,6 @@
 				C1EA5E3E2F767C7C00CB1F82 /* MealSummaryViewController.swift in Sources */,
 				C15550E72F54B987007287B1 /* AppDelegate.swift in Sources */,
 				C1EA5E412F767C7C00CB1F82 /* NutritionFormatting.swift in Sources */,
-				221E216B2F699FCA00B55ED8 /* Graphique.swift in Sources */,
 				C1EA5E3F2F767C7C00CB1F82 /* AjouterRepasViewController.swift in Sources */,
 				C15550E92F54B987007287B1 /* SceneDelegate.swift in Sources */,
 			);

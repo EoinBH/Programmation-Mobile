@@ -269,18 +269,18 @@ class GraphView: UIView {
     // MARK: - Grid
     
     private func drawHorizontalGrid(in rect: CGRect, ctx: CGContext) {
-        ctx.saveGState()
-        ctx.setStrokeColor(gridColor.cgColor)
-        ctx.setLineWidth(0.8)
-        
-        let rows = 5
-        for i in 0...rows {
-            let y = rect.minY + CGFloat(i) * rect.height / CGFloat(rows)
-            ctx.move(to: CGPoint(x: rect.minX, y: y))
-            ctx.addLine(to: CGPoint(x: rect.maxX, y: y))
-        }
-        ctx.strokePath()
-        ctx.restoreGState()
+//        ctx.saveGState()
+//        ctx.setStrokeColor(gridColor.cgColor)
+//        ctx.setLineWidth(0.8)
+//        
+//        let rows = 5
+//        for i in 0...rows {
+//            let y = rect.minY + CGFloat(i) * rect.height / CGFloat(rows)
+//            ctx.move(to: CGPoint(x: rect.minX, y: y))
+//            ctx.addLine(to: CGPoint(x: rect.maxX, y: y))
+//        }
+//        ctx.strokePath()
+//        ctx.restoreGState()
     }
     
     // MARK: - Thresholds

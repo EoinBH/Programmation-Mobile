@@ -17,7 +17,6 @@ final class MealHistoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Historique des repas"
         view.backgroundColor = .systemBackground
 
         tableView.dataSource = self
