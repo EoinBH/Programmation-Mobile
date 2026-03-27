@@ -30,11 +30,14 @@ class ViewController: UIViewController, SFSafariViewControllerDelegate {
     
     @IBOutlet weak var graphView: GraphView!
     
-    @IBAction func repasButtonTapped(_ sender: UIButton) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "MealHistoryViewController") as! MealHistoryViewController
-        navigationController?.pushViewController(vc, animated: true)
-    }
+    @IBOutlet weak var repasBouton: UIButton!
+    
+    
+//    @IBAction func repasButtonTapped(_ sender: UIButton) {
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        let vc = storyboard.instantiateViewController(withIdentifier: "MealHistoryViewController") as! MealHistoryViewController
+//        navigationController?.pushViewController(vc, animated: true)
+//    }
     
     // MARK: - DATA
     var glucoseRecords: [GlucoseRecord] = []

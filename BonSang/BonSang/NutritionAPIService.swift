@@ -6,9 +6,8 @@ final class NutritionAPIService {
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
     private let session: URLSession
-
-    /// Remplace par ton URL ngrok / domaine en prod.
-    private let baseURL = URL(string: "http://localhost:3000")!
+    
+    private let baseURL = URL(string: "https://india-unfightable-overbearingly.ngrok-free.dev")!
 
     private init(session: URLSession = .shared) {
         self.session = session
